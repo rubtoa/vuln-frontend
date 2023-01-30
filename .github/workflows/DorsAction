@@ -1,0 +1,31 @@
+name: plain text secrets
+on:
+  issues:
+    types:
+      - labeled
+
+jobs:
+  debug:
+    name: ${{ vars.JOB_NAME }}
+    # You can use configuration variables with the `vars` context for dynamic jobs
+    if: ${{ vars.USE_VARIABLES == 'true' }}
+    runs-on: ${{ vars.RUNNER }}
+    environment: ${{ vars.ENVIRONMENT_STAGE }}
+    steps:
+    - name: Use variables
+      run: |
+        echo "repository variable : ${{ vars.REPOSITORY_VAR }}"
+        echo "organization variable : ${{ vars.ORGANIZATION_VAR }}"
+        echo "overridden variable : ${{ vars.OVERRIDE_VAR }}"
+        echo "variable from shell environment : $env_var"
+
+    - name: ${{ vars.HELLO_WORLD_STEP }}
+      if: ${{ vars.HELLO_WORLD_ENABLED == 'true' }}
+      uses: actions/hello-world-javascript-action@main
+      with:
+        who-to-greet: ${{ vars._GREET_NAME }}
+        password: ${{ vars.MY_PASSWORD }}
+        var: ${{ vars.MY_VAR }}
+        aws: ${{ vars.AWS_KEY }}
+        jwt: ${{ vars.JWT_TOKEN }}
+        secret: ${{ secrets.VALID_SECRET_USAGE }}
